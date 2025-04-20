@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Rate Limiting Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        select, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+        }
+        .info {
+            margin-top: 20px;
+        }
+        .info span {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Rate Limiting Demo</h1>
+        <p>Select your API key:</p>
+        <select id="apiKeySelect">
+            <option value="12345-abcde">Free User - 5 Requests/Minute</option>
+            <option value="67890-fghij">Pro User - 20 Requests/Minute</option>
+            <option value="admin-key-000">Admin - 100 Requests/Minute</option>
+        </select>
+        <button id="sendRequestButton">Send Request</button>
+
+        <div id="responseMessage" class="message"></div>
+
+        <!-- Additional Info Display -->
+        <div class="info">
+            <p>Remaining Requests: <span id="remainingRequests">--</span></p>
+            <p>Time until reset: <span id="resetTime">--</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Get elements from the DOM
+        const apiKeySelect = document.getElementById('apiKeySelect');
+        const sendRequestButton = document.getElementById('sendRequestButton');
+        const responseMessage = document.getElementById('responseMessage');
+        const remainingRequests = document.getElementById('remainingRequests');
+        const resetTime = document.getElementById('resetTime');
+
+        let countdownInterval=null;
+
+         function startCountdown(seconds) {
+        clearInterval(countdownInterval); // Clear existing timer
+        let timeLeft = seconds;
+
+        resetTime.textContent = `${timeLeft}s`;
+        sendRequestButton.disabled = true;
+
+        countdownInterval = setInterval(() => {
+            timeLeft--;
+            resetTime.textContent = `${timeLeft}s`;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                resetTime.textContent = `--`;
+                sendRequestButton.disabled = false;
+            }
+        }, 1000);
+    }
+
+        // Event listener for button click
+        sendRequestButton.addEventListener('click', async () => {
+            const apiKey = apiKeySelect.value;
+
+            // Make sure the button isn't disabled before sending the request
+            sendRequestButton.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:5000', {
+                    method: 'GET',
+                    headers: {
+                        'x-api-key': apiKey, // Send the selected API key
+                    },
+                });
+
+                const data = await response.json();
+
+               if (response.status === 429) {
+                responseMessage.textContent = data.message;
+                responseMessage.classList.add('error');
+                remainingRequests.textContent = data.remainingRequests ?? '--';
+                startCountdown(60); // Always start from 60s when rate-limited
+            } else if (response.ok) {
+                responseMessage.textContent = data.message;
+                responseMessage.classList.remove('error');
+
+                // Reset timer display
+                clearInterval(countdownInterval);
+                resetTime.textContent = '--';
+                remainingRequests.textContent = data.remainingRequests ?? '--';
+                sendRequestButton.disabled = false;
+            } else {
+                responseMessage.textContent = data.message || 'Unexpected error';
+                responseMessage.classList.add('error');
+                sendRequestButton.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            responseMessage.textContent = 'Error: ' + error.message;
+            responseMessage.classList.add('error');
+            sendRequestButton.disabled = false;
+        }
+      });
+    </script>
+</body>
+</html>
