@@ -1,4 +1,4 @@
-# API Rate Limiting Demo 🚦
+# API Rate Limiter 🚦
 
 A mini project demonstrating API rate-limiting using API keys and subscription tiers (`Free`, `Pro`, `Admin`).
 
