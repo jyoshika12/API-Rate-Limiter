@@ -7,7 +7,7 @@ function apiKeyAuth(req, res, next) {
     return res.status(401).json({ message: "Invalid or missing API key" });
   }
 
-  // Attach user info to request for rate limiting
+  
   req.apiKey = apiKey;
   req.user = apiKeys[apiKey];
   next();
