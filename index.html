@@ -62,7 +62,7 @@
 
         <div id="responseMessage" class="message"></div>
 
-        <!-- Additional Info Display -->
+        
         <div class="info">
             <p>Remaining Requests: <span id="remainingRequests">--</span></p>
             <p>Time until reset: <span id="resetTime">--</span></p>
@@ -70,7 +70,7 @@
     </div>
 
     <script>
-        // Get elements from the DOM
+        
         const apiKeySelect = document.getElementById('apiKeySelect');
         const sendRequestButton = document.getElementById('sendRequestButton');
         const responseMessage = document.getElementById('responseMessage');
@@ -80,7 +80,7 @@
         let countdownInterval=null;
 
          function startCountdown(seconds) {
-        clearInterval(countdownInterval); // Clear existing timer
+        clearInterval(countdownInterval); 
         let timeLeft = seconds;
 
         resetTime.textContent = `${timeLeft}s`;
@@ -98,18 +98,18 @@
         }, 1000);
     }
 
-        // Event listener for button click
+        
         sendRequestButton.addEventListener('click', async () => {
             const apiKey = apiKeySelect.value;
 
-            // Make sure the button isn't disabled before sending the request
+            
             sendRequestButton.disabled = true;
 
             try {
                 const response = await fetch('http://localhost:5000', {
                     method: 'GET',
                     headers: {
-                        'x-api-key': apiKey, // Send the selected API key
+                        'x-api-key': apiKey, 
                     },
                 });
 
@@ -119,12 +119,12 @@
                 responseMessage.textContent = data.message;
                 responseMessage.classList.add('error');
                 remainingRequests.textContent = data.remainingRequests ?? '--';
-                startCountdown(60); // Always start from 60s when rate-limited
+                startCountdown(60); 
             } else if (response.ok) {
                 responseMessage.textContent = data.message;
                 responseMessage.classList.remove('error');
 
-                // Reset timer display
+                
                 clearInterval(countdownInterval);
                 resetTime.textContent = '--';
                 remainingRequests.textContent = data.remainingRequests ?? '--';
