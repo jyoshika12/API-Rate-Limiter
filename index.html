@@ -51,7 +51,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>API Rate Limiting Demo</h1>
+        <h1>API Rate Limiter</h1>
         <p>Select your API key:</p>
         <select id="apiKeySelect">
             <option value="12345-abcde">Free User - 5 Requests/Minute</option>
@@ -62,10 +62,9 @@
 
         <div id="responseMessage" class="message"></div>
 
-        
         <div class="info">
             <p>Remaining Requests: <span id="remainingRequests">--</span></p>
-            <p>Time until reset: <span id="resetTime">--</span></p>
+            <p>Time until next slot opens: <span id="resetTime">--</span></p>
         </div>
     </div>
 
@@ -77,70 +76,88 @@
         const remainingRequests = document.getElementById('remainingRequests');
         const resetTime = document.getElementById('resetTime');
 
-        let countdownInterval=null;
+        let countdownInterval = null;
 
-         function startCountdown(seconds) {
-        clearInterval(countdownInterval); 
-        let timeLeft = seconds;
+        function startCountdown(seconds) {
+            clearInterval(countdownInterval);
+            let timeLeft = seconds;
 
-        resetTime.textContent = `${timeLeft}s`;
-        sendRequestButton.disabled = true;
-
-        countdownInterval = setInterval(() => {
-            timeLeft--;
             resetTime.textContent = `${timeLeft}s`;
 
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                resetTime.textContent = `--`;
-                sendRequestButton.disabled = false;
-            }
-        }, 1000);
-    }
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                resetTime.textContent = `${timeLeft}s`;
 
-        
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    resetTime.textContent = `Capacity Released!`; 
+                }
+            }, 1000);
+        }
+
         sendRequestButton.addEventListener('click', async () => {
             const apiKey = apiKeySelect.value;
 
-            
             sendRequestButton.disabled = true;
 
             try {
                 const response = await fetch('http://localhost:5000', {
                     method: 'GET',
                     headers: {
-                        'x-api-key': apiKey, 
+                        'x-api-key': apiKey,
                     },
                 });
 
                 const data = await response.json();
-
-               if (response.status === 429) {
-                responseMessage.textContent = data.message;
-                responseMessage.classList.add('error');
-                remainingRequests.textContent = data.remainingRequests ?? '--';
-                startCountdown(60); 
-            } else if (response.ok) {
-                responseMessage.textContent = data.message;
-                responseMessage.classList.remove('error');
-
                 
-                clearInterval(countdownInterval);
-                resetTime.textContent = '--';
+               
                 remainingRequests.textContent = data.remainingRequests ?? '--';
-                sendRequestButton.disabled = false;
-            } else {
-                responseMessage.textContent = data.message || 'Unexpected error';
+                
+              
+                if (response.status === 429) {
+                    responseMessage.textContent = data.message;
+                    responseMessage.classList.add('error');
+                    
+                    const resetSeconds = data.resetInSeconds || 60; 
+                    
+                    startCountdown(resetSeconds); 
+                    
+                    sendRequestButton.disabled = false; 
+
+                } else if (response.ok) {
+                    responseMessage.textContent = data.message;
+                    responseMessage.classList.remove('error');
+                    
+                  
+                    clearInterval(countdownInterval);
+                    
+                    const resetSeconds = data.resetInSeconds;
+
+                    if (resetSeconds > 0) {
+                       
+                        startCountdown(resetSeconds); 
+                    } else {
+                       
+                        resetTime.textContent = `Ready`;
+                    }
+                    sendRequestButton.disabled = false; 
+
+               
+                } else {
+                    responseMessage.textContent = data.message || 'Unexpected error';
+                    responseMessage.classList.add('error');
+                    clearInterval(countdownInterval);
+                    resetTime.textContent = `--`;
+                    sendRequestButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                responseMessage.textContent = 'Error: ' + error.message;
                 responseMessage.classList.add('error');
-                sendRequestButton.disabled = false;
+                sendRequestButton.disabled = false; 
             }
-        } catch (error) {
-            console.error('Error:', error);
-            responseMessage.textContent = 'Error: ' + error.message;
-            responseMessage.classList.add('error');
-            sendRequestButton.disabled = false;
-        }
-      });
+        });
     </script>
 </body>
 </html>
