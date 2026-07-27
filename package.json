@@ -3,8 +3,15 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "check": "npm run format:check && npm run lint && npm run typecheck",
+    "dev": "node server.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +21,18 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "ioredis": "^5.6.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.2",
+    "eslint": "^10.8.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.8.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0"
   }
 }

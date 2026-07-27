@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+
+# Keep legacy application and documentation formatting unchanged in Step 1.
+*.js
+*.html
+*.md
