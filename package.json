@@ -5,12 +5,12 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "check": "npm run format:check && npm run lint && npm run typecheck",
-    "dev": "node server.js",
+    "dev": "tsx server.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
