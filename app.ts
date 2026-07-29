@@ -17,7 +17,7 @@ declare module "express-serve-static-core" {
 }
 
 const app = express();
-const redis = new Redis();
+export const redis = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379");
 
 app.use(cors());
 app.use(express.json());

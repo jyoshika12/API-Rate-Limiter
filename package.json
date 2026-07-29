@@ -9,7 +9,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsx --test app.test.ts",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },

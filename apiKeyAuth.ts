@@ -2,21 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 
 import apiKeys from "./apiKeys.js";
 
-interface ApiKeyUser {
-  name: string;
-  limit: number;
-}
-
-interface ApiKeyAuthenticatedRequest extends Request {
-  apiKey?: string;
-  user?: ApiKeyUser;
-}
-
-function apiKeyAuth(
-  req: ApiKeyAuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-): Response | void {
+function apiKeyAuth(req: Request, res: Response, next: NextFunction): Response | void {
   const apiKey = req.headers["x-api-key"];
 
   if (typeof apiKey !== "string" || !apiKeys[apiKey]) {
