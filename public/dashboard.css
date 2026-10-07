@@ -1,0 +1,253 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: #172e2b;
+  background: #f4f6f1;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 1160px;
+  margin: auto;
+  padding: 32px;
+}
+header,
+footer,
+.log-heading,
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  font-size: 26px;
+  font-weight: 750;
+  text-decoration: none;
+  color: inherit;
+}
+.brand span {
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 18px;
+  color: #52665c;
+}
+.badge {
+  font-size: 12px;
+  background: #e3ecd9;
+  padding: 8px 13px;
+  border-radius: 30px;
+}
+.intro {
+  padding: 60px 0 36px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 750;
+  color: #597546;
+}
+h1 {
+  font-size: clamp(38px, 6vw, 64px);
+  letter-spacing: -3px;
+  line-height: 1.06;
+  margin: 18px 0;
+}
+.intro > p:last-child {
+  max-width: 520px;
+  line-height: 1.7;
+  color: #52665c;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  border: 1px solid #d6dfd2;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+}
+.controls {
+  padding: 28px;
+  background: #edf2e7;
+  border-right: 1px solid #d6dfd2;
+}
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+select {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  border: 1px solid #bdccbb;
+  border-radius: 8px;
+  font: inherit;
+}
+.hint {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #5f7065;
+}
+.actions {
+  margin: 24px 0;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+button {
+  background: #203d32;
+  color: #fff;
+  border: 1px solid #203d32;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button.secondary {
+  color: #203d32;
+  background: transparent;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid #99bd72;
+  outline-offset: 3px;
+}
+#status {
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 42px;
+}
+.quota {
+  border-top: 1px solid #cddbc6;
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.quota span,
+.quota small {
+  display: block;
+  font-size: 12px;
+  color: #52665c;
+}
+.quota strong {
+  font-size: 48px;
+  display: block;
+  margin: 8px 0;
+}
+progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #486d35;
+  margin-bottom: 12px;
+}
+.results {
+  padding: 28px;
+  min-width: 0;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.metrics article {
+  border-bottom: 1px solid #e0e6dc;
+  padding-bottom: 24px;
+}
+.metrics span {
+  font-size: 11px;
+  color: #52665c;
+  display: block;
+}
+.metrics strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 25px;
+  white-space: nowrap;
+}
+h2 {
+  font-size: 15px;
+}
+.log-heading {
+  margin: 25px 0 10px;
+}
+.text-button {
+  background: none;
+  border: 0;
+  color: #52665c;
+  padding: 0;
+}
+.table-wrap {
+  height: 260px;
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+th {
+  position: sticky;
+  top: 0;
+  background: white;
+  color: #52665c;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+td,
+th {
+  padding: 13px 8px;
+  border-bottom: 1px solid #edf0e9;
+}
+.allowed {
+  color: #3f702c;
+}
+.blocked {
+  color: #aa661a;
+}
+.error {
+  color: #aa3333;
+}
+footer {
+  padding-top: 24px;
+  font-size: 11px;
+  color: #52665c;
+}
+@media (max-width: 800px) {
+  main {
+    padding: 20px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .controls {
+    border-right: 0;
+    border-bottom: 1px solid #d6dfd2;
+  }
+  .intro {
+    padding-top: 36px;
+  }
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .brand span {
+    display: block;
+    margin: 4px 0 0 29px;
+  }
+}

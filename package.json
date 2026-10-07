@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "test": "tsx --test app.test.ts",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "benchmark": "tsx benchmark.ts",
+    "benchmark:http": "tsx http-benchmark.ts"
   },
   "keywords": [],
   "author": "",

@@ -21,5 +21,6 @@ export default tseslint.config(
       "@typescript-eslint/no-require-imports": "off",
     },
   },
+  { files: ["public/**/*.mjs"], languageOptions: { globals: globals.browser } },
   prettier,
 );

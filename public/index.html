@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quota — API Rate Limiter</title>
+<link rel="stylesheet" href="/demo/dashboard.css">
+<script type="module" src="/demo/dashboard.mjs"></script>
+</head>
+<body>
+<main>
+<header><a class="brand" href="/demo/">◈ Quota<span>API rate limiter</span></a><span class="badge">Interactive demo</span></header>
+<section class="intro"><p class="eyebrow">ONE API. THREE ACCESS TIERS.</p><h1>Every request<br>has a limit.</h1><p>Send requests, watch your quota, and see what happens when you reach the limit.</p></section>
+<section class="workspace" aria-label="Rate limiter demo">
+<div class="controls"><label for="tier">Access tier</label><select id="tier"><option value="free">Free · 5 requests/min</option><option value="pro">Pro · 20 requests/min</option><option value="admin">Admin · 100 requests/min</option></select>
+<p class="hint">Each demo key has its own quota. Requests count within the last 60 seconds.</p>
+<div class="actions"><button id="send">Send request</button><button id="burst" class="secondary">Send 10 together</button></div>
+<p id="status" role="status" aria-live="polite">Ready for your first request.</p>
+<div class="quota"><span>Requests remaining</span><strong id="remaining">—</strong><progress id="quota" max="5" value="0" aria-label="Requests remaining"></progress><small id="reset">No quota checked yet</small></div>
+</div>
+<div class="results"><div class="metrics"><article><span>Allowed</span><strong id="allowed">0</strong></article><article><span>Blocked</span><strong id="blocked">0</strong></article><article><span>Errors</span><strong id="errors">0</strong></article><article><span>Latest round trip</span><strong id="latency">—</strong></article></div>
+<div class="log-heading"><h2>Request activity</h2><button id="clear" class="text-button">Clear activity</button></div>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Tier</th><th>Result</th><th>Round trip</th></tr></thead><tbody id="activity"><tr id="empty"><td colspan="4">Your requests will appear here.</td></tr></tbody></table></div>
+<p class="hint">Activity counts are for this page session. Round trip includes the network and reading the response; it is not a benchmark.</p>
+</div></section>
+<footer><span>Node.js · TypeScript · Express · Redis</span><span>Demo keys only. No real account required.</span></footer>
+</main>
+</body></html>

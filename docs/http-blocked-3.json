@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-07T13:39:29.994Z",
+  "scope": "Local HTTP round trip including authentication, Redis check and response body; excludes frontend",
+  "mode": "blocked",
+  "requests": 10000,
+  "concurrency": 50,
+  "allowed": 0,
+  "blocked": 10000,
+  "errors": 0,
+  "requestsPerSecond": 2437,
+  "p50Ms": 18.017,
+  "p95Ms": 33.535,
+  "p99Ms": 46.678,
+  "environment": {
+    "node": "v22.15.0",
+    "platform": "win32",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "logicalCpus": 12,
+    "memoryGiB": 15.7,
+    "redis": "8.0.5"
+  }
+}

@@ -1,0 +1,21 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 1s
+      retries: 10
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      REDIS_URL: redis://redis:6379
+      HOST: 0.0.0.0
+      ENABLE_DEMO_KEYS: "true"
+    depends_on:
+      redis:
+        condition: service_healthy

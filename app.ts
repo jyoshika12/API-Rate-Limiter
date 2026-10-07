@@ -1,8 +1,11 @@
+import path from "node:path";
 import cors from "cors";
 import express from "express";
-import Redis from "ioredis";
+import { redis } from "./redisClient.js";
+import { keyAdmin } from "./keyAdmin.js";
 
 import apiKeyAuth from "./apiKeyAuth.js";
+import { checkLimit } from "./limiter.js";
 
 interface ApiKeyUser {
   name: string;
@@ -17,10 +20,13 @@ declare module "express-serve-static-core" {
 }
 
 const app = express();
-export const redis = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379");
+export { redis };
 
 app.use(cors());
 app.use(express.json());
+app.use("/demo", express.static(path.join(process.cwd(), "public")));
+app.get("/health", (_req, res) => res.json({ status: "ok" }));
+app.use("/admin/keys", keyAdmin);
 app.use(apiKeyAuth);
 
 app.use(async (req, res, next) => {
@@ -28,36 +34,23 @@ app.use(async (req, res, next) => {
   const apiKey = req.apiKey;
   const userLimit = req.user.limit;
 
-  const key = `rate-limit:${apiKey}:${ip}`;
-  const currentTimestampMs = Date.now();
-  const windowDurationMs = 60000;
-  const cutoffTimestampMs = currentTimestampMs - windowDurationMs;
-
+  const key = `${process.env.RATE_LIMIT_PREFIX ?? "rate-limit:"}${apiKey}:${ip}`;
   try {
-    await redis.zremrangebyscore(key, 0, cutoffTimestampMs);
-
-    await redis.zadd(key, currentTimestampMs, currentTimestampMs);
-
-    const requestsWithinLastMinute = await redis.zcard(key);
-    const remainingRequests = Math.max(0, userLimit - requestsWithinLastMinute);
-
-    const oldestWithScores = await redis.zrange(key, 0, 0, "WITHSCORES");
-    let oldestTimestamp = currentTimestampMs;
-
-    if (oldestWithScores.length >= 2) {
-      oldestTimestamp = parseInt(oldestWithScores[1]);
-    }
-    const timeToReset = 60 - Math.floor((currentTimestampMs - oldestTimestamp) / 1000);
-    const resetInSeconds = Math.max(1, timeToReset);
-
-    if (requestsWithinLastMinute > userLimit) {
+    const {
+      allowed,
+      remaining: remainingRequests,
+      resetInSeconds,
+    } = await checkLimit(redis, key, userLimit);
+    res.setHeader("X-RateLimit-Limit", userLimit);
+    res.setHeader("X-RateLimit-Remaining", remainingRequests);
+    if (!allowed) {
+      res.setHeader("Retry-After", resetInSeconds);
       return res.status(429).json({
         message: "Too many requests. Please wait before sending another request.",
         remainingRequests: 0,
-        resetInSeconds: resetInSeconds,
+        resetInSeconds,
       });
     }
-
     res.locals.remainingRequests = remainingRequests;
     res.locals.resetInSeconds = resetInSeconds;
 
